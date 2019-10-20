@@ -10,6 +10,13 @@ import java.util.List;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 
+
+/**
+ * OBJECT SETTINGS:
+ *  ActivationMode: Selects input polarity and activation function to use.
+ *      1 = Binary inputs and output with Sigmoid activation
+ *      2 = Bipolar inputs and output with bipolar sigmoid activation
+ */
 //TODO: Make activation mode an input to the back propagation method.
 
 public class NeuralNet implements NeuralNetInterface {
@@ -19,10 +26,11 @@ public class NeuralNet implements NeuralNetInterface {
      */
     private final static double INIT_UPPER = 0.5;
     private final static double INIT_LOWER = -0.5;
-    private final static int    ACTIVATION_MODE = 2; // 1 = sigmoid; 2 = bipolar sigmoid
+
     /**
      * Neural Net Input Parameters
      */
+    private int activationMode;          //Determines which mode of activation function and inputs will be used
     private double inputs;              //number of inputs
     private double learningRate;        //learning rate
     private double momentum;            //gradient descent momentum
@@ -32,19 +40,22 @@ public class NeuralNet implements NeuralNetInterface {
 
     /**
      *  NeuralNetXOR Class Contstructor
-     * @param inputs number of inputs
+     *  @param activationMode input, output, and activation function selection
+     *  @param inputs number of inputs
      *  @param layerLengths vector containing number of neurons in each layer (hidden + output) [int]
      *  @param learningRate
      *  @param momentum
      *  @param upBound  upper boundary of the sigmoid at the output
      *  @param lowBound lower boundary of the sigmoid at the output
      **/
-    public NeuralNet(int inputs,
+    public NeuralNet(int activationMode,
+                     int inputs,
                      int[] layerLengths,
                      double learningRate,
                      double momentum,
                      double lowBound,
                      double upBound){
+        this.activationMode = activationMode;
         this.inputs = inputs;
         this.learningRate = learningRate;
         this.momentum = momentum;
@@ -71,7 +82,7 @@ public class NeuralNet implements NeuralNetInterface {
 
     //-----------------------------------------Begin Activation Functions---------------------------------------------//
     public double activation(double y){
-        switch (ACTIVATION_MODE){
+        switch (this.activationMode){
             case 1:
                 return sigmoid(y);
             case 2:
@@ -82,7 +93,7 @@ public class NeuralNet implements NeuralNetInterface {
     }
 
     public double dActivation(double y){
-        switch (ACTIVATION_MODE){
+        switch (this.activationMode){
             case 1:
                 return dSigmoid(y);
             case 2:

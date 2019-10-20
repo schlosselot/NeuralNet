@@ -16,7 +16,7 @@ public class TestNeuralNet {
     public void testWeightInit(){
         //Test Initialization of Random wight Variables to ensure they random (sd > 0.01)and between -0.5 and 0.5
         int[] ll = {4, 1};
-        NeuralNet nn = new NeuralNet(2, ll, 0.1, 0.1, 0, 1);
+        NeuralNet nn = new NeuralNet(1, 2, ll, 0.1, 0.1, 0, 1);
         nn.initializeWeights();
 
         double sum = 0.0;
@@ -56,7 +56,7 @@ public class TestNeuralNet {
     public void testSolver_1_Hidden(){
         double[] inputs = {2, 3};
         int[] ll = {4, 1};
-        NeuralNet nn = new NeuralNet(2, ll, 0.1, 0.1, 0, 1);
+        NeuralNet nn = new NeuralNet(1,2, ll, 0.1, 0.1, 0, 1);
 
         ArrayList<double[]> neurons1 = new ArrayList<double[]>();
         ArrayList<double[]> neurons2= new ArrayList<double[]>();
@@ -86,7 +86,7 @@ public class TestNeuralNet {
     public void testSolver_2_Hidden(){
         double[] inputs = {2, 3, 4};
         int[] ll = {2, 2, 1};
-        NeuralNet nn = new NeuralNet(3, ll, 0.1, 0.1, 0, 1);
+        NeuralNet nn = new NeuralNet(1, 3, ll, 0.1, 0.1, 0, 1);
 
         ArrayList<double[]> neurons1 = new ArrayList<double[]>();
         ArrayList<double[]> neurons2= new ArrayList<double[]>();

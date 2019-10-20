@@ -141,11 +141,6 @@ public class Neuron {
     }
 
 
-
-    public void backPropagate(double y){
-
-    }
-
     @Override
     public String toString() {
         String s = "Weights(";

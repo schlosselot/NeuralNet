@@ -155,15 +155,7 @@ public class NetLayer {
         return this.neurons.get(n).getDeltaWeights();
     }
 
-    /**Back Propagate neurons one by one
 
-     * @param delta
-     */
-    void backPropagate(double delta){
-        for(Neuron n: neurons){
-            n.backPropagate(delta);
-        }
-    }
 
     @Override
     public String toString() {
