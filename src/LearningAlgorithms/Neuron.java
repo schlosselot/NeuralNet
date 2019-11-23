@@ -15,7 +15,6 @@ public class Neuron {
     private double[] deltaWeights;      //difference between weight updated (current - previous)
     private double output;              //Neuron output. NOTE: THIS IS ALSO USED TO STORE ERROR DURING BACK PROPAGATION
 
-
     public Neuron(
             int inputs,                     //number of inputs to neuron
             boolean isBias
@@ -26,6 +25,7 @@ public class Neuron {
             this.prevWeights = new double[inputs + 1];
             this.deltaWeights = new double[inputs + 1];
     }
+
 
     /**
      * Initialize all neuron weights in layer
@@ -40,6 +40,7 @@ public class Neuron {
         }
     }
 
+
     /**
      * Reset neuron values
      */
@@ -47,6 +48,7 @@ public class Neuron {
         for(int i = 0; i < weights.length; i++)
                 weights[i] = 0.0;
     }
+
 
     /**
      * Set weight of indexed weight
@@ -74,12 +76,14 @@ public class Neuron {
         }
     }
 
+
     /**
      * @return array of previous weights
      */
     public double[] getPrevWeights(){
         return weights;
     }
+
 
     /**
      *  @return array of delta weights
@@ -88,11 +92,11 @@ public class Neuron {
         return deltaWeights;
     }
 
+
     /**
      * @return length of weight list
      */
     public int getWeightCount() {return weights.length;}
-
 
 
     /**
@@ -122,7 +126,6 @@ public class Neuron {
             this.output += weights[i+1]*inputs[i];
         }
         return this.output;
-
     }
 
     /**

@@ -118,8 +118,9 @@ public class NeuralNet implements NeuralNetInterface {
      * @param x The input
      * @return
      */
-    public double dSigmoid(double x){ return x*(1-x); } //{return sigmoid(x)*(1-sigmoid(x));}
-
+    public double dSigmoid(double x){
+        return x*(1-x);
+    }
 
     @java.lang.Override
     public double sigmoid(double x) {
@@ -178,6 +179,7 @@ public class NeuralNet implements NeuralNetInterface {
         return outputs[0]; //This will be the output layer's final output
     }
 
+
     /**
      *
      * @param l layer index
@@ -186,6 +188,7 @@ public class NeuralNet implements NeuralNetInterface {
     void getOutput(int l, int i){
         layers.get(l).getOutput(i);
     }
+
 
     /**
      * FOR TESTING - Manually set weights
@@ -196,6 +199,7 @@ public class NeuralNet implements NeuralNetInterface {
             layers.get(i).setWeights(w.get(i));
         }
     }
+
 
     /**
      * FOR TESTING - return entire layers list.
@@ -210,6 +214,7 @@ public class NeuralNet implements NeuralNetInterface {
     public double train(double[] X, double argValue) {
         return backPropagate(X, argValue);
     }
+
 
     /**
      *
@@ -314,15 +319,25 @@ public class NeuralNet implements NeuralNetInterface {
         return output;
     }
 
+    public void setMomentum(double m){
+        this.momentum = m;
+    }
+
+
     @Override
     public void save(File argFile) {
 
+
+
+        //TODO: develop this method to store weights
     }
+
 
     @Override
-    public void load(String argFileName) throws IOException, IOException {
-
+    public void load(File argFile) throws IOException, IOException {
+        //TODO: develop this method to load weights
     }
+
 
     @Override
     public String toString() {

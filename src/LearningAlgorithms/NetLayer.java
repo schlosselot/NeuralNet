@@ -30,6 +30,7 @@ public class NetLayer {
         }
     }
 
+
     /**
      * Initialize all neuron weights in layer
      * @param upper Upper bound of randomized wight initialization
@@ -38,6 +39,7 @@ public class NetLayer {
     public void init(double upper, double lower){
         for(Neuron n: neurons) n.init(upper, lower);
     }
+
 
     /**
      * FOR TESTING - Manually set weights
@@ -54,12 +56,14 @@ public class NetLayer {
         this.updatePrevWeights();
     }
 
+
     /**
      * Clear all neuron weights in layer
      */
     public void clear(){
         for(Neuron n: neurons) n.clear();
     }
+
 
     /**
      * Get layer size
@@ -68,6 +72,7 @@ public class NetLayer {
     public int getSize(){
         return neurons.size();
     }
+
 
     /**
      * Solves the outputs of each neuron in the layer
@@ -81,12 +86,14 @@ public class NetLayer {
         return outputs;
     }
 
+
     /**
      * @return length of weight list
      */
     public int getWeightCount() {
         return neurons.get(0).getWeightCount();
     };
+
 
     /**
      * Get Neron Output. NOTE: Activation function has not been applied.
@@ -97,8 +104,9 @@ public class NetLayer {
         return this.neurons.get(i).getOutput();
     }
 
+
     /**
-     *
+     * Set single neuron's ouptut
      * @param i index of neuron
      * @param v new value for neuron
      */
@@ -106,10 +114,16 @@ public class NetLayer {
         this.neurons.get(i).setOutput(v);
     }
 
+
+    /**
+     * Set all neuron outputs
+     * @param v array of input values
+     */
     public void setOutputs(double[] v){
         for(int i = 0; i < this.neurons.size(); i++)
             this.setOutput(i, v[i]);
     }
+
 
     /**
      *
@@ -121,6 +135,7 @@ public class NetLayer {
         this.neurons.get(neuron_index).setWeight(weight_index, value);
     }
 
+
     /**
      * Get list of neuron weights
      * @param n
@@ -130,12 +145,14 @@ public class NetLayer {
         return this.neurons.get(n).getWeights();
     }
 
+
     /**
      * Update all previous weights with current weights in layer
      */
     void updatePrevWeights(){
         for(Neuron n: this.neurons) n.updatePrevWeights();
     }
+
 
     /**
      * Get list of previous neuron weights
@@ -146,6 +163,7 @@ public class NetLayer {
         return this.neurons.get(n).getPrevWeights();
     }
 
+
     /**
      * Get list of previous delta weights
      * @param n
@@ -154,7 +172,6 @@ public class NetLayer {
     public double[] getDeltaWeights(int n){
         return this.neurons.get(n).getDeltaWeights();
     }
-
 
 
     @Override
