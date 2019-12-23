@@ -147,6 +147,15 @@ public class NetLayer {
 
 
     /**
+     * Get individual weight from neuron in layer
+     * @param n - neuron index in layer
+     * @param w - weight index in neuron
+     * @return wight value w in neuron n
+     */
+    public double getWeight(int n, int w){return this.neurons.get(n).getWeight(w);}
+
+
+    /**
      * Update all previous weights with current weights in layer
      */
     void updatePrevWeights(){

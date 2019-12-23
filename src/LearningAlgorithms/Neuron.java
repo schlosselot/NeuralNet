@@ -5,6 +5,8 @@ import Interface.NeuralNetInterface;
 import javax.swing.text.Position;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
+
 import static java.lang.Math.random;
 
 public class Neuron {
@@ -33,8 +35,9 @@ public class Neuron {
      * @param lower Lower bound of randomized wight initialization
      */
     public void init(double upper, double lower){
+        Random random = new Random();
         for(int i = 0; i < this.weights.length; i++) {
-            this.weights[i] = (random())*(upper-lower) + lower;
+            this.weights[i] = (random.nextDouble())*(upper-lower) + lower;
             this.prevWeights[i] = this.weights[i];
             this.deltaWeights[i] = 0.0;
         }
@@ -65,6 +68,13 @@ public class Neuron {
     public double[] getWeights(){
         return weights;
     }
+
+    /**
+     *
+     * @param w weight index
+     * @return weight value at index w
+     */
+    public  double getWeight(int w) {return weights[w];}
 
     /**
      * Store weights as previous weights

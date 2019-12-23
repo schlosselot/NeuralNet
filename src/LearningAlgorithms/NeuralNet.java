@@ -2,8 +2,7 @@ package LearningAlgorithms;
 
 import Interface.NeuralNetInterface;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +37,8 @@ public class NeuralNet implements NeuralNetInterface {
     //Neural Net Layers
     private List<NetLayer> layers;
 
+    private long trainingCounter;
+
     /**
      *  NeuralNetXOR Class Contstructor
      *  @param activationMode input, output, and activation function selection
@@ -63,6 +64,8 @@ public class NeuralNet implements NeuralNetInterface {
         this.lowBound = lowBound;
         //Initialize list of layers including the output layer
         layers = new ArrayList<NetLayer>();
+
+        trainingCounter = 0;
 
         //NOTE: This module will only be tested using one hidden layer and one output for this commit
         //TODO: Update test cases before committing neural nets with more than one hidden layer, or
@@ -110,7 +113,10 @@ public class NeuralNet implements NeuralNetInterface {
      *  @return f(x) = -1 + 2/(1 + e(-x))
      **/
     public double bipolarSigmoid(double x) {
-        return 2/(1+exp(-x)) - 1;
+        double r = 2/(1+exp(-x)) - 1;
+        if(r > upBound) r = upBound;
+        else if (r < lowBound) r = lowBound;
+        return r;
     }
 
     /**
@@ -119,12 +125,18 @@ public class NeuralNet implements NeuralNetInterface {
      * @return
      */
     public double dSigmoid(double x){
-        return x*(1-x);
+        double r =  x*(1-x);
+        if(r > upBound) r = upBound;
+        else if (r < lowBound) r = lowBound;
+        return r;
     }
 
     @java.lang.Override
     public double sigmoid(double x) {
-        return 1/(1+exp(-x));
+        double r = 1/(1+exp(-x));
+        if(r > upBound) r = upBound;
+        else if (r < lowBound) r = lowBound;
+        return r;
     }
 
     /**
@@ -133,11 +145,19 @@ public class NeuralNet implements NeuralNetInterface {
      * @return
      */
     public double dBipolarSigmoid(double x){
-        return 0.5*(1+x)*(1-x);
+        double r = 0.5*(1+x)*(1-x);
+        if(r > upBound) r = upBound;
+        else if (r < lowBound) r = lowBound;
+        return r;
     }
 
     @java.lang.Override
-    public double customSigmoid(double x) {return 0.0;}
+    public double customSigmoid(double x) {
+        double r = 0.5*(1+x)*(1-x);
+        if(r > upBound) r = upBound;
+        else if (r < lowBound) r = lowBound;
+        return r;
+    }
     //-------------------------------------------End Activation Functions---------------------------------------------//
 
 
@@ -176,7 +196,7 @@ public class NeuralNet implements NeuralNetInterface {
             else if (outputs[i] > upBound) outputs[i] = upBound;
         }
 
-        return outputs[0]; //This will be the output layer's final output
+        return outputs[0]; //This will be the output layer's output
     }
 
 
@@ -254,7 +274,10 @@ public class NeuralNet implements NeuralNetInterface {
                 layers.get(i).setWeight(0, 0, wPrev[0] + learningRate*d*bias); //Assumes single output in output layer
                 for(int j = 1; j < layers.get(i).getWeightCount(); j++){
                     double x = layers.get(i-1).getOutput(j-1);  //Input from previous neuron output to each layer
-                    layers.get(i).setWeight(0, j, wPrev[j] + momentum*wDelta[j] + learningRate*d*x); //Assumes single output in output layer
+                    double value = wPrev[j] + momentum*wDelta[j] + learningRate*d*x;
+                    //if(value > upBound) value = upBound;
+                    //else if(value < lowBound) value = lowBound;
+                    layers.get(i).setWeight(0, j, value); //Assumes single output in output layer
                 }
 
             }
@@ -271,7 +294,7 @@ public class NeuralNet implements NeuralNetInterface {
 
                     //Iterate through next layers neurons to accumulate error
                     for(int k = 0; k < layers.get(i+1).getSize(); k++){
-                        double w = layers.get(i+i).getWeights(k)[j];
+                        double w = layers.get(i+1).getWeights(k)[j];
                         errorSum += layers.get(i+1).getOutput(k)*w; //Note: output of next neuron now stores error
                     }
                     double d = dActivation(y)*errorSum;
@@ -281,10 +304,12 @@ public class NeuralNet implements NeuralNetInterface {
                     layers.get(i).setWeight(j, 0, wPrev[0] + momentum*wDelta[0] + learningRate*d*bias);
                     for(int k = 1; k < layers.get(i).getWeightCount(); k++){
                         double x = layers.get(i-1).getOutput(k-1);  //Input from previous neuron output to each layer
-                        layers.get(i).setWeight(j, k,wPrev[k] + momentum*wDelta[k] + learningRate*d*x); //Assumes single output in output layer
+                        double value = wPrev[k] + momentum*wDelta[k] + learningRate*d*x;
+                        //if(value > upBound) value = upBound;
+                        // if(value < lowBound) value = lowBound;
+                        layers.get(i).setWeight(j, k, value); //Assumes single output in output layer
                     }
                 }
-
             }
 
             //TODO: remove redundant code using in else statement...
@@ -309,24 +334,61 @@ public class NeuralNet implements NeuralNetInterface {
                     //Iterate  and update all weights entering neuron, process bias first
                     layers.get(i).setWeight(j, 0, wPrev[0] + momentum*wDelta[0] + learningRate*d*bias);
                     for(int k = 1; k < layers.get(i).getWeightCount(); k++){
-                        layers.get(i).setWeight(j, k,wPrev[k] + momentum*wDelta[k] + learningRate*d*X[k-1]);
+                        double value = wPrev[k] + momentum*wDelta[k] + learningRate*d*X[k-1];
+                        //if(value > upBound) value = upBound;
+                        //else if(value < lowBound) value = lowBound;
+                        layers.get(i).setWeight(j, k, value);
                     }
                 }
             }
         } //End iterate through layers
         for(NetLayer l: layers)
             l.updatePrevWeights();  //Update previous weights with current weights
+        output = outputFor(X);
         return output;
     }
+
 
     public void setMomentum(double m){
         this.momentum = m;
     }
 
+    /**
+     * Get individual neuron weight
+     * @param l layer index in NN
+     * @param n neuron index in layer
+     * @param w weight index in neuron
+     * @return  neuron weight w in layer l, neuron n
+     */
+    public double getWeight(int l, int n, int w){return this.layers.get(l).getWeight(n, w);}
+
 
     @Override
     public void save(File argFile) {
+        try
+        {
+            System.out.println("+++Saving Neuron weights to file...\n");
 
+            FileOutputStream outFile = new FileOutputStream(argFile);
+            PrintStream out = new PrintStream(outFile);
+
+            out.format("%f,", (double) trainingCounter);
+
+            for(int i = 0; i < this.layers.size(); i++){                      //iterate layer
+                for(int j = 0; j < layers.get(i).getSize(); j++){             //iterate neurons
+                    double[] w = layers.get(i).getWeights(j);
+                    for(int k = 0; k < w.length; k++){                          //iterate input weights
+                        out.format("%f,", w[k]);
+                    }
+                }
+            }
+            out.close();
+            outFile.close();
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
 
 
         //TODO: develop this method to store weights
@@ -335,8 +397,55 @@ public class NeuralNet implements NeuralNetInterface {
 
     @Override
     public void load(File argFile) throws IOException, IOException {
-        //TODO: develop this method to load weights
+        try
+        {
+            System.out.println("Loading neural net from file..   ");
+            BufferedReader in = new BufferedReader(new FileReader(argFile));
+            String line = in.readLine();
+            String[] values = line.split(",");
+
+            this.trainingCounter = (long) Double.parseDouble(values[0]);
+            int a = 1;
+            for(int i = 0; i < this.layers.size(); i++){                      //iterate layer
+                for(int j = 0; j < layers.get(i).getSize(); j++){             //iterate neurons
+                    for(int k = 0; k < layers.get(i).getWeightCount(); k++){                        //iterate input weights
+                        layers.get(i).setWeight(j, k, Double.parseDouble(values[a]));
+                        a++;
+                    }
+                }
+            }
+            in.close();
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
     }
+
+
+    /**
+     * Set/Initialize the training counter
+     * @return trainingCounter
+     */
+    void setTrainingCounter(long c){
+        trainingCounter = c;
+    }
+
+    /**
+     * Get the training counter
+     * @return trainingCounter
+     */
+    long getTrainingCounter(){
+        return trainingCounter;
+    }
+
+    /**
+     * Increment the number of time this LUT has been trained
+     */
+    public void incTrainingCounter(){
+        trainingCounter++;
+    }
+
 
 
     @Override

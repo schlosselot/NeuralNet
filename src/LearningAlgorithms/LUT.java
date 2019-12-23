@@ -6,6 +6,7 @@ import robocode.RobocodeFileOutputStream;
 import robocode.RobocodeFileWriter;
 import robocode.ScannedRobotEvent;
 
+import javax.swing.table.TableStringConverter;
 import java.io.*;
 import java.util.*;
 
@@ -47,11 +48,11 @@ public class LUT implements LUTInterface {
                 "Error: Incorrect number of inputs @ LUT:fineMaxQ. Expected: " + (sLengths.length) + " Actual: " + X.length);
         double max = -100000000;
         ArrayList<Integer> maxList = new ArrayList<Integer>();
-        for(int i = 0; i < saLUT[(int) X[0]][(int) X[1]][(int) X[2]][(int) X[3]][(int) X[4]][(int) X[5]][(int) X[6]].length; i++){
+        for(int i = 0; i < aLength; i++){
             double q = saLUT[(int) X[0]][(int) X[1]][(int) X[2]][(int) X[3]][(int) X[4]][(int) X[5]][(int) X[6]][i];
             if(q >= max){
                 if(q != max) maxList.clear();
-                max = saLUT[(int) X[0]][(int) X[1]][(int) X[2]][(int) X[3]][(int) X[4]][(int) X[5]][(int) X[6]][i];
+                max = q;
                 maxList.add(i);
             }
         }
@@ -84,8 +85,7 @@ public class LUT implements LUTInterface {
         if(X.length != sLengths.length + 1) throw new IllegalArgumentException(
                 "Error: Incorrect number of inputs @ LUT:outputFor. Expected: "
                         + (sLengths.length+1) + " Actual: " + X.length);
-        soutLUTdebug("@outputFor -> X.length = " + X.length);
-        soutLUTdebug("           -> saLUT[" + X[0] + "][" + X[1] + "][" + X[2] + "][" + X[3] + "]");
+
         return saLUT[(int) X[0]][(int) X[1]][(int) X[2]][(int) X[3]][(int) X[4]][(int) X[5]][(int) X[6]][(int) X[7]];
     }
 
@@ -96,8 +96,6 @@ public class LUT implements LUTInterface {
     public double outputForOffPolicy(double[] X) {
         if(X.length != sLengths.length + 1) throw new IllegalArgumentException(
                 "Error: Incorrect number of inputs @ LUT:outputForGreedy. Expected: " + (sLengths.length+1) + " Actual: " + X.length);
-        soutLUTdebug("@getMaxQ -> X.length = " + X.length);
-        soutLUTdebug("         -> saLUT[" + X[0] + "][" + X[1] + "][" + X[2] + "]");
 
         double[] Xa = {X[0], X[1], X[2], X[3], X[4], X[5], X[6]};
         return saLUT[(int) X[0]][(int) X[1]][(int) X[2]][(int) X[3]][(int) X[4]][(int) X[5]][(int) X[6]][findMaxQIndex(Xa)];
@@ -112,7 +110,7 @@ public class LUT implements LUTInterface {
         return (double) random.nextInt(this.aLength);
     }
 
-    public int getActionsIndexFromIndexVector(){
+    public int getActionsIndex(){
         return this.sLengths.length;
     }
 
@@ -231,6 +229,25 @@ public class LUT implements LUTInterface {
 
     }
 
+    /**
+     * Find the absolute maximum q value in LUT
+     * @return
+     */
+    public double getMaxQ(){
+        double max = 0.0;
+        for(int i = 0; i < sLengths[0]; i++){
+            for(int j = 0; j < sLengths[1]; j++){
+                for(int k = 0; k < sLengths[2]; k++){
+                    for(int l = 0; l < sLengths[3]; l++) {
+                        for (int m = 0; m < sLengths[4]; m++) {
+                            for (int n = 0; n < sLengths[5]; n++) {
+                                for (int o = 0; o < sLengths[6]; o++) {
+                                    for (int p = 0; p < aLength; p++) {
+                                         double q = Math.abs(saLUT[i][j][k][l][m][n][o][p]);
+                                         if (q > max) max = q;
+                                    }}}}}}}}
+        return max;
+    }
     @Override
     public void initialiseLUT() {
         trainingCounter = 0;

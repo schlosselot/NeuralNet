@@ -46,5 +46,5 @@ public interface CommonInterface {
      * the data in the file. (e.g. wrong number of hidden neurons).
      * @throws IOException
      */
-    public void load(String argFileName) throws IOException, IOException;
+    public void load(File argFile) throws IOException, IOException;
 }
